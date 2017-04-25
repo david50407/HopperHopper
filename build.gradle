@@ -1,0 +1,27 @@
+group 'tw.davy.minecraft.hopperhopper'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+
+    maven {
+        name 'sonatype-nexus'
+        url 'https://oss.sonatype.org/content/groups/public'
+    }
+    maven {
+        name 'spigotmc-nexus'
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    compile 'org.jetbrains:annotations:15.0'
+    compileClasspath 'org.bukkit:bukkit:1.11.2-R0.1-SNAPSHOT', {
+        ext { fatJarExclude = true }
+    }
+}

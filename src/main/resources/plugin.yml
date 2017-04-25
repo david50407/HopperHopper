@@ -1,0 +1,6 @@
+name: HopperHopper
+main: tw.davy.minecraft.hopperhopper.HopperHopperPlugin
+description: Hopper filter
+version: 1.0-SNAPSHOT
+author:
+  - Davy <me@davy.tw>

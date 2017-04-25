@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HopperHopper.iml" filepath="$PROJECT_DIR$/.idea/modules/HopperHopper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HopperHopper_main.iml" filepath="$PROJECT_DIR$/.idea/modules/HopperHopper_main.iml" group="HopperHopper" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HopperHopper_test.iml" filepath="$PROJECT_DIR$/.idea/modules/HopperHopper_test.iml" group="HopperHopper" />
+    </modules>
+  </component>
+</project>
