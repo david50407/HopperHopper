@@ -87,6 +87,9 @@ public class ItemFrameEventListener implements Listener {
             return;
 
         final Block hopperBlock = getRelativedHopperBlock(itemFrameEntity);
+        if (hopperBlock == null)
+            return;
+
         final Database filterDatabase = mPlugin.getFilterDatabase();
         filterDatabase.clearFilter(hopperBlock);
     }
