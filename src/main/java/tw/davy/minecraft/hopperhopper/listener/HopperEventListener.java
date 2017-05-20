@@ -51,12 +51,19 @@ public class HopperEventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryMoveItem(final InventoryMoveItemEvent ev) {
-        if (ev.getDestination().getType() != InventoryType.HOPPER)
+        if (ev.getDestination().getType() != InventoryType.HOPPER ||
+                !(ev.getDestination().getHolder() instanceof Hopper))
             return;
 
         final Inventory source = ev.getSource();
         final ItemStack itemStack = ev.getItem();
-        if (itemStack.getType() != Material.STONE) {
+        final Block hopperBlock = ((Hopper) ev.getDestination().getHolder()).getBlock();
+        final Database filterDatabase = mPlugin.getFilterDatabase();
+        final List<ItemStack> allowedItems = filterDatabase.loadFilter(hopperBlock);
+
+        if (!allowedItems.isEmpty() && allowedItems.parallelStream()
+                .noneMatch(allowed -> allowed.getType() == itemStack.getType() &&
+                        allowed.getDurability() == itemStack.getDurability())) {
             switch (source.getType()) {
                 case FURNACE:
                     ev.setCancelled(true);
@@ -64,7 +71,8 @@ public class HopperEventListener implements Listener {
                 default: {
                     Optional<ItemStack> selectedItemStackOptional = Stream.of(source.getStorageContents())
                             .filter(Objects::nonNull)
-                            .filter(item -> item.getType() == Material.STONE)
+                            .filter(item -> allowedItems.parallelStream().anyMatch(allowed -> allowed.getType() == item.getType() &&
+                                    allowed.getDurability() == item.getDurability()))
                             .findFirst();
                     if (selectedItemStackOptional.isPresent()) {
                         final ItemStack selectedItem = selectedItemStackOptional.get();

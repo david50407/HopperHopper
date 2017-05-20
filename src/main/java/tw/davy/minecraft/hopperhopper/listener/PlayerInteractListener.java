@@ -3,13 +3,19 @@ package tw.davy.minecraft.hopperhopper.listener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 /**
  * @author Davy
@@ -34,17 +40,22 @@ public class PlayerInteractListener implements Listener {
                 .getNearbyEntities(hopperBlock.getLocation(), 2, 1, 2)
                 .parallelStream()
                 .filter(entity -> entity.getType() == EntityType.ITEM_FRAME)
-                .anyMatch(itemFrame ->
-                        itemFrame.getLocation().getBlockY() == hopperBlock.getY() && (
-                        (itemFrame.getLocation().getBlockX() == hopperBlock.getX() &&
-                                Math.abs(itemFrame.getLocation().getBlockZ() - hopperBlock.getZ()) == 1) ||
-                        (itemFrame.getLocation().getBlockZ() == hopperBlock.getZ() &&
-                                Math.abs(itemFrame.getLocation().getBlockX() - hopperBlock.getX()) == 1)));
+                .map(entity -> getRelativedHopperBlock((ItemFrame) entity))
+                .filter(Objects::nonNull)
+                .anyMatch(relativedHopperBlock -> hopperBlock.getLocation().equals(relativedHopperBlock.getLocation()));
 
         if (!alreadyHasFilter) {
             ev.setCancelled(false);
             ev.setUseItemInHand(Event.Result.ALLOW);
             ev.setUseInteractedBlock(Event.Result.DENY);
         }
+    }
+
+    @Nullable
+    private Block getRelativedHopperBlock(final ItemFrame itemFrame) {
+        final Block attechedBlock = itemFrame.getLocation().getBlock().getRelative(itemFrame.getAttachedFace());
+        final BlockState blockState = attechedBlock.getState();
+
+        return blockState instanceof Hopper ? attechedBlock : null;
     }
 }

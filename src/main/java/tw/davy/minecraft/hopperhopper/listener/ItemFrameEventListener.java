@@ -52,11 +52,12 @@ public class ItemFrameEventListener implements Listener {
         if (itemStack == null || itemStack.getType() == Material.AIR)
             return;
 
-        ev.setCancelled(true);
         final int level = mPlugin.getLevel(itemStack.getType());
         final Block hopperBlock = getRelativedHopperBlock(itemFrameEntity);
         if (level == 0 || hopperBlock == null)
             return;
+
+        ev.setCancelled(true);
 
         final Database filterDatabase = mPlugin.getFilterDatabase();
         final List<ItemStack> filteredMaterials = filterDatabase.loadFilter(hopperBlock);
@@ -96,11 +97,11 @@ public class ItemFrameEventListener implements Listener {
         if (inventory == null)
             return;
 
-        final ItemStack clonedCursorItem = ev.getCursor() != null ?
-                ev.getCursor().clone() : null;
-
         if (inventory.getHolder() instanceof FilterInventoryHolder) {
             ev.setCancelled(true);
+
+            final ItemStack clonedCursorItem = ev.getCursor() != null ?
+                    ev.getCursor().clone() : null;
 
             Bukkit.getScheduler().runTask(mPlugin, () -> {
                 ev.getWhoClicked().setItemOnCursor(clonedCursorItem);
@@ -112,9 +113,24 @@ public class ItemFrameEventListener implements Listener {
                     ev.setCurrentItem(cloned);
                 }
             });
-        } else if (ev.getInventory().getHolder() instanceof FilterInventoryHolder &&
-                (ev.isShiftClick() || ev.getClick() == ClickType.DOUBLE_CLICK)) {
-            ev.setCancelled(true);
+        } else if (ev.getInventory().getHolder() instanceof FilterInventoryHolder) {
+            if (ev.getClick() == ClickType.DOUBLE_CLICK)
+                ev.setCancelled(true);
+            else if (ev.isShiftClick()) {
+                ev.setCancelled(true);
+
+                final Inventory filterInvnetory = ev.getInventory();
+                final ItemStack clonedTargetItem = ev.getCurrentItem() != null ?
+                        ev.getCurrentItem().clone() : null;
+
+                if (clonedTargetItem != null && clonedTargetItem.getType() != Material.AIR &&
+                        !filterInvnetory.containsAtLeast(clonedTargetItem, 1)) {
+                    clonedTargetItem.setAmount(1);
+                    Bukkit.getScheduler().runTask(mPlugin, () -> {
+                            filterInvnetory.addItem(clonedTargetItem);
+                    });
+                }
+            }
         }
     }
 
