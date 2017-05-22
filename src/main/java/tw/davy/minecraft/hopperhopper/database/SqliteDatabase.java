@@ -73,6 +73,18 @@ public class SqliteDatabase implements Database {
     }
 
     @Override
+    public void dispose() {
+        try {
+            if (mConnection == null || !mConnection.isClosed())
+                return;
+
+            mConnection.close();
+            mConnection = null;
+        } catch (SQLException ignored) {
+        }
+    }
+
+    @Override
     public void saveFilter(final Block hopperBlock, final List<ItemStack> items) {
         if (items.isEmpty()) {
             clearFilter(hopperBlock);

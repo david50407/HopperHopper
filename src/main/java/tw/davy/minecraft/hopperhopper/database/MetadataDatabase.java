@@ -31,6 +31,11 @@ public class MetadataDatabase<IMPL extends Database> implements Database {
     }
 
     @Override
+    public void dispose() {
+        mInternalDatabase.dispose();
+    }
+
+    @Override
     public void saveFilter(final Block hopperBlock, final List<ItemStack> items) {
         mInternalDatabase.saveFilter(hopperBlock, items);
         saveMetadata(hopperBlock, items);

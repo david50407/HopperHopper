@@ -72,8 +72,10 @@ public class ItemFrameEventListener implements Listener {
             return;
 
         final Block hopperBlock = getRelativedHopperBlock((ItemFrame) ev.getEntity());
-        final Database filterDatabase = mPlugin.getFilterDatabase();
-        filterDatabase.clearFilter(hopperBlock);
+        if (hopperBlock == null)
+            return;
+
+        mPlugin.getFilterDatabase().clearFilter(hopperBlock);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -90,8 +92,7 @@ public class ItemFrameEventListener implements Listener {
         if (hopperBlock == null)
             return;
 
-        final Database filterDatabase = mPlugin.getFilterDatabase();
-        filterDatabase.clearFilter(hopperBlock);
+        mPlugin.getFilterDatabase().clearFilter(hopperBlock);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -9,6 +9,7 @@ import java.util.List;
  * @author Davy
  */
 public interface Database {
+    void dispose();
     void saveFilter(Block hopperBlock, List<ItemStack> items);
     List<ItemStack> loadFilter(Block hopperBlock);
     void clearFilter(Block hopperBlock);

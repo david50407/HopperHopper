@@ -50,6 +50,12 @@ public class HopperHopperPlugin extends JavaPlugin {
         pluginManager.registerEvents(new PlayerInteractListener(), this);
     }
 
+    @Override
+    public void onDisable() {
+        if (mDatabase != null)
+            mDatabase.dispose();
+    }
+
     public int getLevel(final Material material) {
         return mMaterialLevels.getOrDefault(material, 0);
     }
